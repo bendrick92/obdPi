@@ -46,5 +46,6 @@ Pinout map:
 
 ## Dependencies
 
+* [Python 2.7](https://www.python.org/download/releases/2.7/)
 * [python-OBD](https://github.com/brendan-w/python-OBD)
 * RPi.GPIO
