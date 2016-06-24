@@ -1,0 +1,6 @@
+site_name: obdPi
+pages:
+- Overview: index.md
+- Setup: setup.md
+- Wiring: wiring.md
+theme: readthedocs
