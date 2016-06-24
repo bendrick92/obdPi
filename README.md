@@ -1,6 +1,8 @@
 ## obdPi
 A Python 2.7 project designed for the Raspberry Pi to output a vehicle's OBD-II data to a 16x2 character OLED display.
 
+[![obdPi Preview](http://i.imgur.com/OEufVUv.png)](https://www.youtube.com/watch?v=kVyh6FTyh9E)
+
 ## Code
 
 * /docs - Documentation files (see the [documentation](https://bendrick92.github.io/obdPi/wiring/) for latest version)
