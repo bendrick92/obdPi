@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>Setup - obdPi</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Setup";
+    var mkdocs_page_input_path = "setup.md";
+    var mkdocs_page_url = "/setup/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> obdPi</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Setup</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#raspbian-setup">Raspbian Setup</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#daemon-setup">Daemon Setup</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#bluetooth-setup">Bluetooth Setup</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#serial-connection">Serial Connection</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#display-wiring">Display Wiring</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../wiring/">Wiring</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">obdPi</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Setup</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="raspbian-setup">Raspbian Setup</h2>
+<p>First, make sure your package lists are up-to-date:</p>
+<pre><code>sudo apt-get update
+</code></pre>
+
+<p>Confirm that Python is installed (should be included by default in your Raspbian installation):</p>
+<pre><code>python --version
+</code></pre>
+
+<p>Install Python setuptools to get PIP (the Python package manager):</p>
+<pre><code>sudo apt-get -y install python-pip
+</code></pre>
+
+<p>Install the python-OBD library via PIP:</p>
+<pre><code>sudo pip install obd
+</code></pre>
+
+<p>Install the RPi-GPIO library via PIP:</p>
+<pre><code>sudo pip install RPi.GPIO
+</code></pre>
+
+<p>Install the pyserial library:</p>
+<pre><code>sudo apt-get install python-serial
+</code></pre>
+
+<p>Next, enable auto-login to the 'pi' user (or whichever user you choose to run the scripts under):</p>
+<pre><code>sudo nano /etc/systemd/system/getty.target.wants/getty@tty1.service
+</code></pre>
+
+<p>Change the <code>ExecStart</code> line to:</p>
+<pre><code>ExecStart=-/sbin/agetty -a pi %I $TERM
+</code></pre>
+
+<hr />
+<h2 id="daemon-setup">Daemon Setup</h2>
+<p>NOTE: This tutorial assumes you are using the latest release of Raspbian Jessie.  Information on daemon configuration in Jessie can be found <a href="http://www.raspberrypi-spy.co.uk/2015/10/how-to-autorun-a-python-script-on-boot-using-systemd/">here</a>.</p>
+<p>To have the obdPi scripts start on boot, you'll need to setup a daemon to execute the Python script for you.</p>
+<p>First, create a new service script for the daemon:</p>
+<pre><code>sudo nano /lib/systemd/system/obdpi.service
+</code></pre>
+
+<p>For OLED applications, enter the following content in your new script:</p>
+<pre><code>[Unit]
+Description=obdPi Service (OLED)
+After=multi-user.target
+[Service]
+Type=idle
+ExecStart=/usr/bin/python /path/to/scripts/main_oled.py
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+<p>Or for non-OLED applications:</p>
+<pre><code>[Unit]
+Description=obdPi Service (Print)
+After=multi-user.target
+[Service]
+Type=idle
+ExecStart=/usr/bin/python /path/to/scripts/main_print.py
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+<p>Enable the daemon script:</p>
+<pre><code>sudo chmod 644 /lib/systemd/system/obdpi.service
+sudo systemctl daemon-reload
+sudo systemctl enable obdpi.service
+</code></pre>
+
+<p>Then reboot:</p>
+<pre><code>sudo reboot
+</code></pre>
+
+<p>After rebooting, confirm that the service is running:</p>
+<pre><code>sudo systemctl status obdpi.service
+</code></pre>
+
+<p>To stop the service:</p>
+<pre><code>sudo systemctl stop obdpi.service
+</code></pre>
+
+<p>And to disable the service (prevent it from starting at boot):</p>
+<pre><code>sudo systemctl disable obdpi.service
+</code></pre>
+
+<hr />
+<h2 id="bluetooth-setup">Bluetooth Setup</h2>
+<p>To setup the Bluetooth connection between your Raspberry Pi and the OBD-II interface, first ensure the Bluetooth USB adapter is plugged into your Pi and the Bluetooth OBD-II adapter is installed in the vehicle's OBD-II port (and that both are within range of each other).</p>
+<p>Next, install the basic Bluetooth utilities for Raspbian:</p>
+<pre><code>sudo apt-get install --no-install-recommends bluetooth
+</code></pre>
+
+<p>When the install is complete, make sure the Bluetooth service is running:</p>
+<pre><code>sudo service bluetooth status
+</code></pre>
+
+<p>Next, to configure the Bluetooth connection:</p>
+<pre><code>sudo bluetoothctl
+agent on
+default-agent
+pairable on
+scan on
+</code></pre>
+
+<p>The identifier for your Bluetooth OBD-II adapter should appear - be sure to take note of it. (AA:BB:CC:11:22:33 will be used as an example below).</p>
+<pre><code>scan off
+pair AA:BB:CC:11:22:33
+</code></pre>
+
+<p>At this point, you may be prompted to enter an authentication pin.  Most adapters use, 0000, 1234 or require no pin (just press 'Enter').  Other adapters may require a specific pin, which would have been included on a slip with the adapter.</p>
+<pre><code>connect AA:BB:CC:11:22;33
+quit
+</code></pre>
+
+<p>The Bluetooth connection should now be ready for use!</p>
+<hr />
+<h2 id="serial-connection">Serial Connection</h2>
+<p>Once the Bluetooth connection has been configured, you'll need to bind it to a serial port.  Doing so allows you to communicate with the Bluetooth OBD-II adapter in Python.</p>
+<p>One time configuration of the serial connection can be done with the following:</p>
+<pre><code>sudo rfcomm release all
+sudo rfcomm bind 0 AA:BB:CC:11:22:33
+</code></pre>
+
+<p>To configure the serial connection at each boot (recommeded), simply add the aforementioned code before the end of the <code>/etc/rc.local</code>:</p>
+<pre><code>sudo nano /etc/rc.local
+</code></pre>
+
+<hr />
+<h2 id="display-wiring">Display Wiring</h2>
+<p>Utilization of the <code>main_oled.py</code> script requires a 16x2 character OLED display, as well as the assembly of a custom 40-pin to 16-pin cable.  A step-by-step guide for creating this cable can be found <a href="../wiring">here</a>.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../wiring/" class="btn btn-neutral float-right" title="Wiring">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../wiring/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
