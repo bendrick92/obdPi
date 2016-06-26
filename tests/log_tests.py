@@ -72,11 +72,43 @@ def create_new_log_manager_add_warning_entry_test():
         error_list.append(error_item)
 
 
+def create_new_log_manager_get_log_count_test():
+    try:
+        log_man = LogManager('tests/')
+        if log_man is not None:
+            log_count = log_man.get_log_count()
+            success_item = 'create_new_log_manager_get_log_count_test'
+            success_list.append(success_item)
+        else:
+            error_item = ['create_new_log_manager_get_log_count_test', 'Could not create LogManager object']
+            error_list.append(error_item)
+    except Exception, e:
+        error_item = ['create_new_log_manager_get_log_count_test', str(e)]
+        error_item.append(error_item)
+
+
+def create_new_log_manager_get_oldest_log_file_name_test():
+    try:
+        log_man = LogManager('tests/')
+        if log_man is not None:
+            oldest_log_file_name = log_man.get_oldest_log_file_name()
+            success_item = 'create_new_log_manager_get_oldest_log_file_name_test'
+            success_list.append(success_item)
+        else:
+            error_item = ['create_new_log_manager_get_oldest_log_file_name_test', 'Could not create LogManager object']
+            error_list.append(error_item)
+    except Exception, e:
+        error_item = ['create_new_log_manager_get_oldest_log_file_name_test', str(e)]
+        error_item.append(error_item)
+
+
 def run_all():
     create_new_log_manager_test()
     create_new_log_manager_add_info_entry_test()
     create_new_log_manager_add_debug_entry_test()
     create_new_log_manager_add_warning_entry_test()
+    create_new_log_manager_get_log_count_test()
+    create_new_log_manager_get_oldest_log_file_name_test()
 
     print_results()
 
