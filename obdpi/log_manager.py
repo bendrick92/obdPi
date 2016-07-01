@@ -13,7 +13,7 @@ class LogManager:
         self.full_log_file_path = os.path.join(self.LOGS_DIR, log_file_path_sub)
         if not os.path.exists(self.full_log_file_path):
             os.makedirs(self.full_log_file_path)
-        if self.get_log_count() > 10:
+        if self.get_log_count() > 5:
             self.delete_log_file_by_name(self.get_oldest_log_file_name())
         self.log_file_name = self.full_log_file_path + self.get_timestamp_string() + '.log'
         logging.basicConfig(filename=self.log_file_name, level=logging.DEBUG, format='%(asctime)s: %(message)s')
