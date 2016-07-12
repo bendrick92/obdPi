@@ -18,7 +18,7 @@ See [https://bendrick92.github.io/obdPi](https://bendrick92.github.io/obdPi) for
 ## To-do
 
 - [ ] Update logging system to log multiple OBD-II parameters simultaneously
-- [ ] Update logging system to restrict number/age of logs saved
+- [x] Update logging system to restrict number/age of logs saved
 - [ ] Implement button-based switching of OBD-II commands
 - [ ] Implement asynchronous OBD-II requests (via python-OBD)
 - [ ] Implement serial/OBD-II connection retries when failing after initial connection
