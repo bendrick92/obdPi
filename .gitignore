@@ -1,3 +1,5 @@
 *.pyc
 docs/site/
 logs/
+.vscode/
+.idea/
