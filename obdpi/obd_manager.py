@@ -3,8 +3,6 @@ import obd
 
 class ObdManager:
 
-    KPA_TO_PSI_CONVERSION_FACTOR = 0.145038
-
     def __init__(self):
         self.obd_connection = ""
 
@@ -26,17 +24,17 @@ class ObdManager:
         if self.has_obd_connection():
             if command == "RPM":
                 obd_command = obd.commands.RPM
-                obd_unit = str(obd.Unit.RPM)
+                obd_unit = "RPM"
             elif command == "BOOST":
                 obd_command = obd.commands.INTAKE_PRESSURE
-                obd_unit = str(obd.Unit.PSI)
+                obd_unit = "PSI"
             else:
                 return "'" + command + "' is unrecognized OBD command"
                 
             obd_response = self.obd_connection.query(obd_command)
             
             if not obd_response.is_null():
-                converted_obd_response = round(obd_response.value * self.KPA_TO_PSI_CONVERSION_FACTOR, 3)
+                converted_obd_response = round(obd_response.value.to("psi").magnitude, 3)
                 return str(converted_obd_response) + " " + obd_unit
             else:
                 return "No OBD response"
